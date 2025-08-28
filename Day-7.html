@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Counter + Text Preview</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React + ReactDOM + Babel -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- React code -->
+    <script type="text/babel">
+      const { useState } = React;
+
+      function App() {
+        const [text, setText] = useState("");
+
+        const handleChange = (e) => setText(e.target.value);
+
+        const wordCount =
+          text.trim() === "" ? 0 : text.trim().split(/\\s+/).length;
+        const charCount = text.length;
+
+        return (
+          <div
+            style={{ fontFamily: "Arial", padding: "20px", maxWidth: "600px" }}
+          >
+            <h2>Live Text Preview + Counter</h2>
+
+            <textarea
+              rows="4"
+              style={{ width: "100%", padding: "10px", fontSize: "16px" }}
+              value={text}
+              onChange={handleChange}
+              placeholder="Type something here..."
+            />
+
+            <p>
+              <strong>Character Count:</strong> {charCount}
+            </p>
+
+            <h3>Preview:</h3>
+            <div
+              style={{
+                minHeight: "50px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                background: "#f9f9f9",
+              }}
+            >
+              {text || "(Your text will appear here)"}
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
