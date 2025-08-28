@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Directory</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React + ReactDOM + Babel -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- React Code -->
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      function App() {
+        const [students, setStudents] = useState([]);
+        const [loading, setLoading] = useState(true);
+
+        useEffect(() => {
+          fetch("http://localhost:3000/")
+            .then((res) => res.json())
+            .then((data) => {
+              setStudents(data);
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.error("Error fetching students:", err);
+              setLoading(false);
+            });
+        }, []); // runs once on mount
+
+        if (loading) return <p>Loading students...</p>;
+
+        return (
+          <div style={{ fontFamily: "Arial", padding: "20px" }}>
+            <h2>🎓 Student Directory</h2>
+            <ul>
+              {students.map((s) => (
+                <li key={s.id}>
+                  <strong>{s.name}</strong> — Age: {s.age}, Grade: {s.grade}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
