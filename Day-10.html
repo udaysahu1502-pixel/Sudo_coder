@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Product Card List</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+    <h1 class="text-2xl font-bold mb-6">Product Card List</h1>
+
+    <div
+      id="product-list"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-5xl"
+    ></div>
+
+    <script>
+      const products = [
+        {
+          name: "Wireless Headphones",
+          description: "Noise-cancelling, long battery life",
+          price: 120,
+          image:
+            "https://plus.unsplash.com/premium_photo-1677838847804-4054143fb91a?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+        {
+          name: "Smartwatch",
+          description: "Fitness tracking, waterproof",
+          price: 90,
+          image:
+            "https://images.unsplash.com/photo-1660844817855-3ecc7ef21f12?q=80&w=486&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+        {
+          name: "Gaming Mouse",
+          description: "RGB lights, ergonomic design",
+          price: 45,
+          image:
+            "https://images.unsplash.com/photo-1705332112231-4dff35a9587c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
+      ];
+
+      const productList = document.getElementById("product-list");
+
+      products.forEach((product) => {
+        const card = document.createElement("div");
+        card.className =
+          "bg-white rounded-2xl shadow-md overflow-hidden hover:scale-105 transition-transform duration-200";
+
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover">
+          <div class="p-4">
+            <h2 class="text-lg font-bold">${product.name}</h2>
+            <p class="text-gray-600 text-sm">${product.description}</p>
+            <div class="mt-2 flex justify-between items-center">
+              <span class="text-blue-600 font-semibold">$${product.price}</span>
+              <button class="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Buy</button>
+            </div>
+          </div>
+        `;
+
+        productList.appendChild(card);
+      });
+    </script>
+  </body>
+</html>
