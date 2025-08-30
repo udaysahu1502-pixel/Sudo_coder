@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student CRUD API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .api-docs {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .api-docs h2 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .endpoint {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #6a11cb;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .get { background-color: #2575fc; }
+        .post { background-color: #49cc90; }
+        .put { background-color: #fca130; }
+        .delete { background-color: #f93e3e; }
+        
+        .path {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .description {
+            margin: 10px 0;
+            color: #555;
+        }
+        
+        .request-response {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .request-response h2 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2575fc;
+        }
+        
+        .response {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .success { color: #49cc90; }
+        .error { color: #f93e3e; }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Student CRUD API</h1>
+            <p class="subtitle">A complete Express.js backend for student management</p>
+        </header>
+        
+        <div class="content">
+            <div class="api-docs">
+                <h2>API Documentation</h2>
+                
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/api/students</span>
+                    <p class="description">Retrieve all students</p>
+                </div>
+                
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/api/students/:id</span>
+                    <p class="description">Retrieve a specific student by ID</p>
+                </div>
+                
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/api/students</span>
+                    <p class="description">Create a new student</p>
+                </div>
+                
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="path">/api/students/:id</span>
+                    <p class="description">Update a student by ID</p>
+                </div>
+                
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="path">/api/students/:id</span>
+                    <p class="description">Delete a student by ID</p>
+                </div>
+                
+                <h2>Example Student Object</h2>
+                <div class="code-block">
+                    <pre>{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "age": 20,
+  "major": "Computer Science",
+  "year": "Sophomore"
+}</pre>
+                </div>
+                
+                <h2>Server Setup Code</h2>
+                <div class="code-block">
+                    <pre>const express = require('express');
+const app = express();
+const PORT = 3000;
+
+app.use(express.json());
+
+let students = [
+  { id: 1, name: 'John Doe', email: 'john@example.com', age: 20, major: 'Computer Science', year: 'Sophomore' },
+  { id: 2, name: 'Jane Smith', email: 'jane@example.com', age: 21, major: 'Mathematics', year: 'Junior' }
+];
+
+// GET all students
+app.get('/api/students', (req, res) => {
+  res.json(students);
+});
+
+// GET student by ID
+app.get('/api/students/:id', (req, res) => {
+  const student = students.find(s => s.id === parseInt(req.params.id));
+  if (!student) return res.status(404).json({ error: 'Student not found' });
+  res.json(student);
+});
+
+// POST create new student
+app.post('/api/students', (req, res) => {
+  const { name, email, age, major, year } = req.body;
+  const newStudent = {
+    id: students.length + 1,
+    name,
+    email,
+    age,
+    major,
+    year
+  };
+  students.push(newStudent);
+  res.status(201).json(newStudent);
+});
+
+// PUT update student
+app.put('/api/students/:id', (req, res) => {
+  const student = students.find(s => s.id === parseInt(req.params.id));
+  if (!student) return res.status(404).json({ error: 'Student not found' });
+  
+  const { name, email, age, major, year } = req.body;
+  student.name = name || student.name;
+  student.email = email || student.email;
+  student.age = age || student.age;
+  student.major = major || student.major;
+  student.year = year || student.year;
+  
+  res.json(student);
+});
+
+// DELETE student
+app.delete('/api/students/:id', (req, res) => {
+  const index = students.findIndex(s => s.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Student not found' });
+  
+  students.splice(index, 1);
+  res.status(204).send();
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});</pre>
+                </div>
+            </div>
+            
+            <div class="request-response">
+                <h2>Test the API</h2>
+                
+                <div class="form-group">
+                    <label for="method">HTTP Method</label>
+                    <select id="method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="url">URL</label>
+                    <input type="text" id="url" value="/api/students">
+                </div>
+                
+                <div id="requestBody" class="form-group">
+                    <label for="body">Request Body (JSON)</label>
+                    <textarea id="body" rows="6" placeholder='{"name": "John Doe", "email": "john@example.com", "age": 20, "major": "Computer Science", "year": "Sophomore"}'></textarea>
+                </div>
+                
+                <button onclick="makeRequest()">Send Request</button>
+                
+                <div class="response">
+                    <h3>Response</h3>
+                    <pre id="responseOutput">// Response will appear here</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated backend for demonstration purposes
+        let students = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', age: 20, major: 'Computer Science', year: 'Sophomore' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', age: 21, major: 'Mathematics', year: 'Junior' }
+        ];
+        
+        function updateMethodUI() {
+            const method = document.getElementById('method').value;
+            const requestBody = document.getElementById('requestBody');
+            
+            if (method === 'GET' || method === 'DELETE') {
+                requestBody.style.display = 'none';
+            } else {
+                requestBody.style.display = 'block';
+            }
+            
+            // Update URL for specific student operations
+            const urlInput = document.getElementById('url');
+            if ((method === 'GET' || method === 'PUT' || method === 'DELETE') && 
+                !urlInput.value.includes('/:id') && 
+                !urlInput.value.match(/\/\d+$/)) {
+                urlInput.value = '/api/students/:id';
+            } else if (method === 'POST' && urlInput.value !== '/api/students') {
+                urlInput.value = '/api/students';
+            }
+        }
+        
+        document.getElementById('method').addEventListener('change', updateMethodUI);
+        
+        function makeRequest() {
+            const method = document.getElementById('method').value;
+            let url = document.getElementById('url').value;
+            const body = document.getElementById('body').value;
+            
+            // For demonstration, we'll simulate the API responses
+            let response = {};
+            let status = 200;
+            
+            // Extract ID from URL if present
+            const idMatch = url.match(/\/(\d+)$/);
+            const id = idMatch ? parseInt(idMatch[1]) : null;
+            
+            if (url.includes('/api/students')) {
+                if (method === 'GET') {
+                    if (id) {
+                        // Get specific student
+                        const student = students.find(s => s.id === id);
+                        if (student) {
+                            response = student;
+                        } else {
+                            status = 404;
+                            response = { error: 'Student not found' };
+                        }
+                    } else {
+                        // Get all students
+                        response = students;
+                    }
+                } else if (method === 'POST') {
+                    // Create new student
+                    try {
+                        const newStudent = JSON.parse(body);
+                        newStudent.id = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+                        students.push(newStudent);
+                        status = 201;
+                        response = newStudent;
+                    } catch (e) {
+                        status = 400;
+                        response = { error: 'Invalid JSON' };
+                    }
+                } else if (method === 'PUT') {
+                    // Update student
+                    if (!id) {
+                        status = 400;
+                        response = { error: 'Student ID required' };
+                    } else {
+                        const studentIndex = students.findIndex(s => s.id === id);
+                        if (studentIndex === -1) {
+                            status = 404;
+                            response = { error: 'Student not found' };
+                        } else {
+                            try {
+                                const updatedData = JSON.parse(body);
+                                students[studentIndex] = { ...students[studentIndex], ...updatedData };
+                                response = students[studentIndex];
+                            } catch (e) {
+                                status = 400;
+                                response = { error: 'Invalid JSON' };
+                            }
+                        }
+                    }
+                } else if (method === 'DELETE') {
+                    // Delete student
+                    if (!id) {
+                        status = 400;
+                        response = { error: 'Student ID required' };
+                    } else {
+                        const studentIndex = students.findIndex(s => s.id === id);
+                        if (studentIndex === -1) {
+                            status = 404;
+                            response = { error: 'Student not found' };
+                        } else {
+                            students.splice(studentIndex, 1);
+                            status = 204;
+                            response = {};
+                        }
+                    }
+                }
+            } else {
+                status = 404;
+                response = { error: 'Endpoint not found' };
+            }
+            
+            // Display response
+            const responseOutput = document.getElementById('responseOutput');
+            if (status === 200 || status === 201) {
+                responseOutput.innerHTML = `<span class="success">Status: ${status}</span>\n${JSON.stringify(response, null, 2)}`;
+            } else {
+                responseOutput.innerHTML = `<span class="error">Status: ${status}</span>\n${JSON.stringify(response, null, 2)}`;
+            }
+        }
+        
+        // Initialize UI
+        updateMethodUI();
+    </script>
+</body>
+</html>
