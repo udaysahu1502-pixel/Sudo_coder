@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notes App — Mini Task (CRUD)</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#111827; --muted:#6b7280; --text:#e5e7eb;
+      --accent:#22d3ee; --accent-2:#38bdf8; --danger:#ef4444; --ok:#10b981;
+      --ring: 0 0 0 3px rgba(56,189,248,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto; color:var(--text); background:linear-gradient(180deg,#0b1023, #0f172a 40%, #0b1023)}
+    .container{max-width:1100px; margin:32px auto; padding:0 16px}
+    header{display:flex; align-items:center; gap:14px; margin-bottom:18px}
+    .pill{background:rgba(34,211,238,.18); color:var(--accent); padding:6px 10px; border-radius:999px; font-weight:600; font-size:12px; display:inline-flex; align-items:center; gap:6px}
+    .card{background:rgba(17,24,39,.75); border:1px solid rgba(148,163,184,.12); backdrop-filter: blur(6px); border-radius:var(--radius); padding:18px; box-shadow: 0 10px 30px rgba(0,0,0,.25)}
+    .grid{display:grid; grid-template-columns:300px 1fr; gap:18px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+    label{font-size:13px; color:var(--muted)}
+    input,textarea{width:100%; padding:12px 14px; background:#0b1220; border:1px solid rgba(148,163,184,.14); color:var(--text); border-radius:12px; outline:none}
+    input:focus,textarea:focus{box-shadow:var(--ring); border-color:var(--accent-2)}
+    textarea{min-height:140px; resize:vertical}
+    .row{display:flex; gap:10px; align-items:center}
+    .btn{border:0; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#071018}
+    .btn-muted{background:#0b1220; color:var(--text); border:1px solid rgba(148,163,184,.18)}
+    .btn-danger{background: linear-gradient(135deg,#fb7185,var(--danger)); color:#1b0a0a}
+    .btn:disabled{opacity:.6; cursor:not-allowed}
+    .toolbar{display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:10px}
+    .search{flex:1}
+    .list{display:grid; gap:10px}
+    .note{padding:14px; border:1px solid rgba(148,163,184,.12); border-radius:14px; background:#0b1220}
+    .note h4{margin:0 0 6px 0}
+    .note small{color:var(--muted)}
+    .tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px}
+    .tag{font-size:11px; padding:3px 8px; border-radius:999px; background:rgba(56,189,248,.15); color:var(--accent-2); border:1px solid rgba(56,189,248,.25)}
+    .row-right{display:flex; gap:8px; align-items:center}
+    .empty{padding:30px; text-align:center; color:var(--muted); border:1px dashed rgba(148,163,184,.25); border-radius:14px}
+    .toast{position:fixed; right:16px; bottom:16px; background:#0b1220; border:1px solid rgba(148,163,184,.25); padding:12px 14px; border-radius:12px; display:none}
+    .badge{font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid rgba(148,163,184,.25); color:var(--muted)}
+    .pin{font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--muted)}
+    .count{color:var(--muted); font-size:13px}
+    .link{color:var(--accent-2); text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="pill">📅 Day 13</span>
+      <h1 style="margin:0">Database Basics — Mini Task</h1>
+    </header>
+
+    <div class="card" style="margin-bottom:18px">
+      <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap">
+        <div><strong>Topics</strong>
+          <ul style="margin:8px 0 0 18px">
+            <li>Connect Express with DB</li>
+            <li>Store / retrieve data</li>
+          </ul>
+        </div>
+        <div><strong>Mini Task</strong><div>Notes App (full-stack CRUD)</div></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Compose / Edit -->
+      <section class="card">
+        <h2 style="margin:0 0 12px 0">Create / Edit Note</h2>
+        <form id="noteForm">
+          <input type="hidden" id="noteId" />
+          <div style="display:grid; gap:10px">
+            <div>
+              <label for="title">Title</label>
+              <input id="title" placeholder="e.g., Connect Express with MongoDB" required />
+            </div>
+            <div>
+              <label for="content">Content</label>
+              <textarea id="content" placeholder="Write your note..."></textarea>
+            </div>
+            <div class="row">
+              <div style="flex:1">
+                <label for="tags">Tags (comma separated)</label>
+                <input id="tags" placeholder="db, express, crud" />
+              </div>
+              <div class="row" style="margin-top:22px">
+                <input type="checkbox" id="pinned" />
+                <label for="pinned">Pin</label>
+              </div>
+            </div>
+            <div class="row">
+              <button class="btn btn-primary" id="saveBtn" type="submit">Save</button>
+              <button class="btn btn-muted" id="resetBtn" type="button">Reset</button>
+              <span id="status" class="badge" aria-live="polite"></span>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- List / Search -->
+      <section class="card">
+        <div class="toolbar">
+          <input class="search" id="query" placeholder="Search notes by title, content or tag…" />
+          <select id="sort" class="btn btn-muted" aria-label="Sort">
+            <option value="updated_desc">Latest</option>
+            <option value="updated_asc">Oldest</option>
+            <option value="title_asc">Title A–Z</option>
+            <option value="title_desc">Title Z–A</option>
+            <option value="pinned_first">Pinned first</option>
+          </select>
+        </div>
+        <div class="row" style="justify-content:space-between; margin-bottom:6px">
+          <div class="count" id="count">0 notes</div>
+          <button id="seed" class="btn btn-muted" title="Insert sample notes">Seed</button>
+        </div>
+        <div id="list" class="list" role="list"></div>
+        <div id="empty" class="empty" style="display:none">No notes yet. Create your first note on the left ✨</div>
+      </section>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+  /* ---------------------------
+     Backend wiring (toggleable)
+     --------------------------- */
+  const USE_API = false;            // set to true to use Express backend
+  const API_BASE = "/api/notes";    // adjust when USE_API = true
+
+  /* ---------------------------
+     Utilities
+     --------------------------- */
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+  const toast = (msg) => { const t = $("#toast"); t.textContent = msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 1600); };
+  const nowIso = () => new Date().toISOString();
+
+  /* ---------------------------
+     Local Storage adapter
+     --------------------------- */
+  const LS_KEY = "notes.v1";
+  const ls = {
+    all(){ return JSON.parse(localStorage.getItem(LS_KEY) || "[]"); },
+    saveAll(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); },
+    create(data){
+      const list = ls.all();
+      const note = {...data, id: crypto.randomUUID(), createdAt: nowIso(), updatedAt: nowIso()};
+      list.push(note); ls.saveAll(list); return note;
+    },
+    update(id, patch){
+      const list = ls.all();
+      const i = list.findIndex(n=>n.id===id); if(i<0) return null;
+      list[i] = {...list[i], ...patch, updatedAt: nowIso()};
+      ls.saveAll(list); return list[i];
+    },
+    delete(id){
+      const list = ls.all().filter(n=>n.id!==id);
+      ls.saveAll(list); return true;
+    }
+  };
+
+  /* ---------------------------
+     API adapter (Express)
+     --------------------------- */
+  async function api(method, path="", body){
+    const res = await fetch(API_BASE + path, {
+      method,
+      headers: {"Content-Type":"application/json"},
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if(!res.ok) throw new Error(await res.text());
+    return res.status===204 ? null : res.json();
+  }
+  const store = {
+    async list(){ return USE_API ? api("GET","") : ls.all(); },
+    async create(data){ return USE_API ? api("POST","",data) : ls.create(data); },
+    async update(id, patch){ return USE_API ? api("PUT","/"+id, patch) : ls.update(id, patch); },
+    async remove(id){ return USE_API ? api("DELETE","/"+id) : ls.delete(id); }
+  };
+
+  /* ---------------------------
+     UI Logic
+     --------------------------- */
+  const state = { notes:[], query:"", sort:"updated_desc" };
+
+  async function load(){
+    state.notes = await store.list();
+    render();
+  }
+
+  function render(){
+    const q = state.query.trim().toLowerCase();
+    let items = [...state.notes];
+
+    if(q){
+      items = items.filter(n =>
+        n.title.toLowerCase().includes(q) ||
+        n.content.toLowerCase().includes(q) ||
+        (n.tags||[]).some(t => t.toLowerCase().includes(q))
+      );
+    }
+
+    switch(state.sort){
+      case "updated_asc": items.sort((a,b)=>a.updatedAt.localeCompare(b.updatedAt)); break;
+      case "updated_desc": items.sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)); break;
+      case "title_asc": items.sort((a,b)=>a.title.localeCompare(b.title)); break;
+      case "title_desc": items.sort((a,b)=>b.title.localeCompare(a.title)); break;
+      case "pinned_first": items.sort((a,b)=> (b.pinned|0)-(a.pinned|0) || b.updatedAt.localeCompare(a.updatedAt)); break;
+    }
+
+    $("#count").textContent = ${items.length} note${items.length!==1?'s':''};
+    const list = $("#list");
+    list.innerHTML = "";
+    $("#empty").style.display = items.length ? "none" : "block";
+
+    items.forEach(n=>{
+      const el = document.createElement("div");
+      el.className = "note";
+      el.setAttribute("role","listitem");
+      el.innerHTML = `
+        <div class="row" style="justify-content:space-between">
+          <div class="row" style="gap:8px; align-items:center">
+            ${n.pinned ? '<span class="pin">📌 Pinned</span>' : ''}
+            <h4>${escapeHtml(n.title)}</h4>
+          </div>
+          <div class="row-right">
+            <button class="btn btn-muted" data-edit="${n.id}">Edit</button>
+            <button class="btn btn-danger" data-del="${n.id}">Delete</button>
+          </div>
+        </div>
+        <div style="white-space:pre-wrap; margin-top:4px">${escapeHtml(n.content)}</div>
+        <div class="tags">${(n.tags||[]).map(t=><span class="tag">#${escapeHtml(t)}</span>).join("")}</div>
+        <small>Updated: ${new Date(n.updatedAt).toLocaleString()}</small>
+      `;
+      list.appendChild(el);
+    });
+
+    // bind buttons
+    $$("[data-edit]").forEach(b=>b.onclick = () => startEdit(b.dataset.edit));
+    $$("[data-del]").forEach(b=>b.onclick = () => removeNote(b.dataset.del));
+  }
+
+  function escapeHtml(s=""){
+    return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  function readForm(){
+    return {
+      title: $("#title").value.trim(),
+      content: $("#content").value.trim(),
+      tags: $("#tags").value.split(",").map(s=>s.trim()).filter(Boolean),
+      pinned: $("#pinned").checked
+    };
+  }
+
+  function resetForm(){
+    $("#noteId").value = "";
+    $("#title").value = "";
+    $("#content").value = "";
+    $("#tags").value = "";
+    $("#pinned").checked = false;
+    $("#saveBtn").textContent = "Save";
+    $("#status").textContent = "";
+  }
+
+  function startEdit(id){
+    const n = state.notes.find(x=>x.id===id);
+    if(!n) return;
+    $("#noteId").value = n.id;
+    $("#title").value = n.title;
+    $("#content").value = n.content;
+    $("#tags").value = (n.tags||[]).join(", ");
+    $("#pinned").checked = !!n.pinned;
+    $("#saveBtn").textContent = "Update";
+    $("#status").textContent = "Editing…";
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  async function removeNote(id){
+    if(!confirm("Delete this note?")) return;
+    await store.remove(id);
+    state.notes = state.notes.filter(n=>n.id!==id);
+    render();
+    toast("Note deleted");
+  }
+
+  // events
+  $("#noteForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const id = $("#noteId").value;
+    const data = readForm();
+    if(!data.title){ toast("Title is required"); $("#title").focus(); return; }
+
+    if(id){
+      const updated = await store.update(id, data);
+      Object.assign(state.notes.find(n=>n.id===id) || {}, updated || {});
+      toast("Note updated");
+    }else{
+      const created = await store.create(data);
+      state.notes.push(created);
+      toast("Note added");
+    }
+    resetForm();
+    render();
+  });
+
+  $("#resetBtn").onclick = resetForm;
+  $("#query").oninput = (e)=>{ state.query = e.target.value; render(); };
+  $("#sort").onchange = (e)=>{ state.sort = e.target.value; render(); };
+
+  $("#seed").onclick = async ()=>{
+    const samples = [
+      {title:"Connect Express with DB", content:"Use mongoose to connect to MongoDB.\n.env: MONGODB_URI=…", tags:["express","db","mongo"], pinned:true},
+      {title:"REST routes", content:"GET/POST/PUT/DELETE /api/notes", tags:["api","crud"]},
+      {title:"Homework", content:"Add pagination + search on server.", tags:["task"]}
+    ];
+    for(const s of samples){ state.notes.push(await store.create(s)); }
+    render();
+    toast("Seeded 3 notes");
+  };
+
+  // initial load
+  load();
+  </script>
+
+  <!--
+    Back-end (for later):
+
+    const express = require("express");
+    const app = express(); app.use(express.json());
+    // in real app: connect DB, use a Note model
+
+    app.get("/api/notes", async (req,res)=> res.json(await Note.find().sort({updatedAt:-1})));
+    app.post("/api/notes", async (req,res)=> res.status(201).json(await Note.create(req.body)));
+    app.put("/api/notes/:id", async (req,res)=> res.json(await Note.findByIdAndUpdate(req.params.id, req.body, {new:true})));
+    app.delete("/api/notes/:id", async (req,res)=> { await Note.findByIdAndDelete(req.params.id); res.sendStatus(204); });
+
+    app.listen(3000);
+  -->
+</body>
+</html>
