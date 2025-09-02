@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Authentication Basics – Mini Task</title>
+<style>
+  :root{
+    --bg: #ffffff;
+    --card: #f8fafc;
+    --text: #0f172a;
+    --muted:#64748b;
+    --link:#2563eb;
+    --rule:#e2e8f0;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:32px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    background:var(--bg); color:var(--text); display:grid; place-items:start;
+  }
+
+  /* Panel */
+  .panel{
+    width:320px; background:var(--card); border:1px solid var(--rule);
+    border-radius:14px; padding:18px 16px 14px 16px;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  h1{
+    font-size:22px; margin:0 0 6px 0; font-weight:700;
+  }
+
+  .topics-title{
+    display:flex; align-items:center; gap:8px; color:var(--muted);
+    font-size:13px; font-weight:600; letter-spacing:.02em; margin:8px 0 8px 0;
+    text-transform:uppercase;
+  }
+  .chevrons{ width:16px; height:16px; opacity:.7 }
+  ul{ list-style:none; padding:0; margin:0 0 12px 0 }
+  li{
+    display:flex; align-items:center; gap:10px; padding:6px 2px; font-size:15px;
+  }
+  .dot{
+    width:6px; height:6px; border-radius:999px; background:#60a5fa; flex:0 0 auto;
+    box-shadow:0 0 0 2px #dbeafe;
+  }
+  hr{ border:none; border-top:1px solid var(--rule); margin:10px 0 12px 0 }
+
+  .mini{
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .target{
+    flex:0 0 auto; width:18px; height:18px;
+    color:#3b82f6;
+  }
+  .mini h2{
+    margin:0; font-size:15px; color:var(--link); font-weight:700;
+  }
+  .mini p{
+    margin:4px 0 0 0; font-size:14px; color:var(--muted); line-height:1.35;
+  }
+
+  /* Optional hover styles */
+  a{ color:inherit; text-decoration:none }
+  .topic a{ color:var(--text) }
+  .topic a:hover{ color:var(--link) }
+  .mini h2:hover{ text-decoration:underline }
+</style>
+</head>
+<body>
+  <aside class="panel" aria-label="Authentication Basics – Topics and Mini Task">
+    <h1>Authentication Basics</h1>
+
+    <div class="topics-title">
+      <svg class="chevrons" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+      Topics
+    </div>
+
+    <ul>
+      <li class="topic">
+        <span class="dot" aria-hidden="true"></span>
+        <a href="#">JWT intro</a>
+      </li>
+      <li class="topic">
+        <span class="dot" aria-hidden="true"></span>
+        <a href="#">Create login API</a>
+      </li>
+    </ul>
+
+    <hr />
+
+    <div class="mini">
+      <svg class="target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <circle cx="12" cy="12" r="6"></circle>
+        <circle cx="12" cy="12" r="2"></circle>
+      </svg>
+      <div>
+        <h2><a href="#">Mini Task</a></h2>
+        <p>Backend-only Auth<br/>(register/login user)</p>
+      </div>
+    </div>
+  </aside>
+</body>
+</html>
