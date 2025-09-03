@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Stack Auth App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container { max-width: 960px; }
+        .card { border-radius: 1rem; }
+        .form-control:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
+        .navbar-brand { font-weight: bold; }
+        .hidden { display: none; }
+        .visible { display: block; }
+        .profile-img { 
+            width: 150px; 
+            height: 150px; 
+            object-fit: cover; 
+        }
+        .card-header { background-color: rgba(13, 110, 253, 0.1); }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">AuthApp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="home-link">Home</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item" id="nav-login">
+                        <a class="nav-link" href="#" id="login-link">Login</a>
+                    </li>
+                    <li class="nav-item" id="nav-register">
+                        <a class="nav-link" href="#" id="register-link">Register</a>
+                    </li>
+                    <li class="nav-item hidden" id="nav-dashboard">
+                        <a class="nav-link" href="#" id="dashboard-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item hidden" id="nav-logout">
+                        <a class="nav-link" href="#" id="logout-link">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <!-- Home View -->
+        <div id="home-view" class="visible">
+            <div class="jumbotron bg-light p-5 rounded">
+                <h1 class="display-4">Welcome to AuthApp</h1>
+                <p class="lead">A complete full-stack application with user authentication.</p>
+                <hr class="my-4">
+                <p>Register an account or login to access the dashboard.</p>
+                <button class="btn btn-primary btn-lg me-2" id="home-login-btn">Login</button>
+                <button class="btn btn-outline-primary btn-lg" id="home-register-btn">Register</button>
+            </div>
+        </div>
+
+        <!-- Login View -->
+        <div id="login-view" class="hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header text-center py-4">
+                            <h3>Login to Your Account</h3>
+                        </div>
+                        <div class="card-body p-5">
+                            <form id="login-form">
+                                <div class="mb-3">
+                                    <label for="login-email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="login-email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="login-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="login-password" required>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                </div>
+                            </form>
+                            <div class="text-center mt-3">
+                                <p>Don't have an account? <a href="#" id="to-register">Register here</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register View -->
+        <div id="register-view" class="hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header text-center py-4">
+                            <h3>Create an Account</h3>
+                        </div>
+                        <div class="card-body p-5">
+                            <form id="register-form">
+                                <div class="mb-3">
+                                    <label for="register-name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="register-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="register-email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="register-password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-confirm-password" class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" id="register-confirm-password" required>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                                </div>
+                            </form>
+                            <div class="text-center mt-3">
+                                <p>Already have an account? <a href="#" id="to-login">Login here</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="hidden">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow">
+                        <div class="card-header text-center py-4">
+                            <h3>Welcome to Your Dashboard</h3>
+                        </div>
+                        <div class="card-body p-5 text-center">
+                            <div class="mb-4">
+                                <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" class="profile-img rounded-circle" alt="Profile" id="profile-picture">
+                            </div>
+                            <h4 id="welcome-message">Hello, User!</h4>
+                            <p class="text-muted">You have successfully logged in to your account.</p>
+                            <div class="mt-5">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Profile</h5>
+                                                <p class="card-text">Manage your account settings</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Security</h5>
+                                                <p class="card-text">Update your password</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Activity</h5>
+                                                <p class="card-text">View your login history</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast for notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">AuthApp</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
+
+    <!-- Backend Simulation Script -->
+    <script>
+        // Backend simulation (would be a separate server in a real application)
+        class BackendSimulator {
+            constructor() {
+                this.users = JSON.parse(localStorage.getItem('users')) || [];
+                this.sessions = {};
+                this.currentToken = null;
+            }
+            
+            // Register a new user
+            register(name, email, password) {
+                return new Promise((resolve, reject) => {
+                    // Check if user already exists
+                    if (this.users.find(user => user.email === email)) {
+                        return reject({ message: 'User already exists with this email' });
+                    }
+                    
+                    // Create new user
+                    const newUser = {
+                        id: Date.now().toString(),
+                        name,
+                        email,
+                        password, // In a real app, this would be hashed
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    this.users.push(newUser);
+                    localStorage.setItem('users', JSON.stringify(this.users));
+                    
+                    resolve({ 
+                        message: 'User registered successfully',
+                        user: { id: newUser.id, name: newUser.name, email: newUser.email }
+                    });
+                });
+            }
+            
+            // Login user
+            login(email, password) {
+                return new Promise((resolve, reject) => {
+                    const user = this.users.find(u => u.email === email && u.password === password);
+                    
+                    if (!user) {
+                        return reject({ message: 'Invalid email or password' });
+                    }
+                    
+                    // Create session token
+                    const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                    this.sessions[token] = user.id;
+                    this.currentToken = token;
+                    
+                    resolve({
+                        message: 'Login successful',
+                        token,
+                        user: { id: user.id, name: user.name, email: user.email }
+                    });
+                });
+            }
+            
+            // Get current user
+            getCurrentUser(token) {
+                return new Promise((resolve, reject) => {
+                    if (!token || !this.sessions[token]) {
+                        return reject({ message: 'Invalid or expired token' });
+                    }
+                    
+                    const userId = this.sessions[token];
+                    const user = this.users.find(u => u.id === userId);
+                    
+                    if (!user) {
+                        return reject({ message: 'User not found' });
+                    }
+                    
+                    resolve({
+                        user: { id: user.id, name: user.name, email: user.email }
+                    });
+                });
+            }
+            
+            // Logout user
+            logout(token) {
+                return new Promise((resolve, reject) => {
+                    if (!token || !this.sessions[token]) {
+                        return reject({ message: 'Invalid token' });
+                    }
+                    
+                    delete this.sessions[token];
+                    this.currentToken = null;
+                    
+                    resolve({ message: 'Logout successful' });
+                });
+            }
+        }
+
+        // Initialize backend simulator
+        const backend = new BackendSimulator();
+    </script>
+
+    <!-- Frontend Application Script -->
+    <script>
+        // DOM Elements
+        const views = {
+            home: document.getElementById('home-view'),
+            login: document.getElementById('login-view'),
+            register: document.getElementById('register-view'),
+            dashboard: document.getElementById('dashboard-view')
+        };
+        
+        const navItems = {
+            login: document.getElementById('nav-login'),
+            register: document.getElementById('nav-register'),
+            dashboard: document.getElementById('nav-dashboard'),
+            logout: document.getElementById('nav-logout')
+        };
+        
+        // Toast initialization
+        const toastEl = document.getElementById('liveToast');
+        const toastMessage = document.getElementById('toast-message');
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        
+        // Show a toast message
+        function showToast(message, isError = false) {
+            toastMessage.textContent = message;
+            if (isError) {
+                toastMessage.classList.add('text-danger');
+            } else {
+                toastMessage.classList.remove('text-danger');
+            }
+            toast.show();
+        }
+        
+        // Show a specific view and hide others
+        function showView(viewName) {
+            Object.keys(views).forEach(key => {
+                if (key === viewName) {
+                    views[key].classList.remove('hidden');
+                    views[key].classList.add('visible');
+                } else {
+                    views[key].classList.remove('visible');
+                    views[key].classList.add('hidden');
+                }
+            });
+        }
+        
+        // Update navigation based on authentication status
+        function updateNavigation(isAuthenticated) {
+            if (isAuthenticated) {
+                navItems.login.classList.add('hidden');
+                navItems.register.classList.add('hidden');
+                navItems.dashboard.classList.remove('hidden');
+                navItems.logout.classList.remove('hidden');
+            } else {
+                navItems.login.classList.remove('hidden');
+                navItems.register.classList.remove('hidden');
+                navItems.dashboard.classList.add('hidden');
+                navItems.logout.classList.add('hidden');
+            }
+        }
+        
+        // Check if user is authenticated
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                backend.getCurrentUser(token)
+                    .then(response => {
+                        updateNavigation(true);
+                        showView('dashboard');
+                        document.getElementById('welcome-message').textContent = `Hello, ${response.user.name}!`;
+                        document.getElementById('profile-picture').src = 
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(response.user.name)}&background=0D8ABC&color=fff`;
+                    })
+                    .catch(error => {
+                        localStorage.removeItem('authToken');
+                        updateNavigation(false);
+                        showView('home');
+                    });
+            } else {
+                updateNavigation(false);
+                showView('home');
+            }
+        }
+        
+        // Event Listeners
+        document.getElementById('home-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('home');
+        });
+        
+        document.getElementById('login-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('login');
+        });
+        
+        document.getElementById('register-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('register');
+        });
+        
+        document.getElementById('dashboard-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('dashboard');
+        });
+        
+        document.getElementById('logout-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                backend.logout(token)
+                    .then(() => {
+                        localStorage.removeItem('authToken');
+                        updateNavigation(false);
+                        showView('home');
+                        showToast('You have been logged out successfully');
+                    })
+                    .catch(error => {
+                        showToast(error.message, true);
+                    });
+            }
+        });
+        
+        document.getElementById('home-login-btn').addEventListener('click', () => {
+            showView('login');
+        });
+        
+        document.getElementById('home-register-btn').addEventListener('click', () => {
+            showView('register');
+        });
+        
+        document.getElementById('to-register').addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('register');
+        });
+        
+        document.getElementById('to-login').addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('login');
+        });
+        
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            backend.login(email, password)
+                .then(response => {
+                    localStorage.setItem('authToken', response.token);
+                    updateNavigation(true);
+                    showView('dashboard');
+                    document.getElementById('welcome-message').textContent = `Hello, ${response.user.name}!`;
+                    document.getElementById('profile-picture').src = 
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(response.user.name)}&background=0D8ABC&color=fff`;
+                    showToast('Login successful!');
+                })
+                .catch(error => {
+                    showToast(error.message, true);
+                });
+        });
+        
+        // Register form submission
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match', true);
+                return;
+            }
+            
+            backend.register(name, email, password)
+                .then(response => {
+                    showToast('Registration successful! Please login.');
+                    showView('login');
+                    // Pre-fill the login form
+                    document.getElementById('login-email').value = email;
+                })
+                .catch(error => {
+                    showToast(error.message, true);
+                });
+        });
+        
+        // Initialize the application
+        checkAuth();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
